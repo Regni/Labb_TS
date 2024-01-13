@@ -1,6 +1,57 @@
-let loan:number = 1000000
-let year:number = 0.0025
-let interest:number = 300
+let loan:{amount:number; isSet:boolean} = {
+  amount:100000,
+  isSet: false
+}
+
+let interest:{procentage:number; isSet:boolean}={
+  procentage:3,
+  isSet: false
+}
+
+let year:{amount:number; isSet:Boolean} ={
+  amount:25,
+  isSet: false
+}
+
+const btn = document.getElementById("calculateBtn") as HTMLButtonElement
+btn.addEventListener("click",()=>{
+
+})
+
+
+const loanInput = document.getElementById("loan") as HTMLInputElement
+loanInput.addEventListener("blur",()=>{
+  if(numberCheck(loanInput.value)){
+    loanInput.classList.remove("invalid")
+    console.log(Number(loanInput.value.replace(",",".")))
+  }else{
+    loanInput.classList.add("invalid")
+  }
+})
+
+const interestInput = document.getElementById("interest")as HTMLInputElement
+interestInput.addEventListener("blur",()=>{
+  if(numberCheck(interestInput.value)){
+    interestInput.classList.remove("invalid")
+    console.log(Number(interestInput.value.replace(",",".")))
+  }else{
+    interestInput.classList.add("invalid")
+  }
+})
+
+const yearsInput = document.getElementById("years")as HTMLInputElement
+yearsInput.addEventListener("blur",()=>{
+  if(numberCheck(yearsInput.value)){
+    yearsInput.classList.remove("invalid")
+    console.log(Number(yearsInput.value.replace(",",".")))
+    year.amount = Number(yearsInput.value.replace(",","."))
+    year.isSet=true
+    console.log(year)
+  }else{
+    yearsInput.classList.add("invalid")
+  }
+})
+
 
 function amount(p:number,r:number,n:number):void{
 let monthlyPay:number = p * ((r*(1+r)**n)/((1+r)**n-1))
@@ -26,18 +77,12 @@ function formatMoney(unformatted:number):string{
   return unformatted.toLocaleString("sv-SE",{minimumFractionDigits:2, maximumFractionDigits: 2})
 }
 
-const loanInput = document.getElementById("loan") as HTMLInputElement
-loanInput.addEventListener("keydown",(e)=>{
-  if(e.key == "Enter"){
-    e.preventDefault()
-    let test:number = Number(loanInput.value)
-console.log(test)
-
-    //write test logic here
-  }
-})
-let test:number = Number(loanInput.value)
-console.log(test)
+function numberCheck(x:any):boolean{
+return /^[0-9]+([.,][0-9]+)?$/.test(x)
+}
 
 
-console.log(monthlyPay(loan,year,interest))
+
+
+
+
