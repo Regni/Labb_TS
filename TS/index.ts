@@ -1,88 +1,129 @@
-let loan:{amount:number; isSet:boolean} = {
-  amount:100000,
-  isSet: false
-}
+let loan: { amount: number; isSet: boolean } = {
+  amount: 100000,
+  isSet: false,
+};
 
-let interest:{procentage:number; isSet:boolean}={
-  procentage:3,
-  isSet: false
-}
+let interest: { procentage: number; isSet: boolean } = {
+  procentage: 3,
+  isSet: false,
+};
 
-let year:{amount:number; isSet:Boolean} ={
-  amount:25,
-  isSet: false
-}
-
-const btn = document.getElementById("calculateBtn") as HTMLButtonElement
-btn.addEventListener("click",()=>{
-
-})
-
-
-const loanInput = document.getElementById("loan") as HTMLInputElement
-loanInput.addEventListener("blur",()=>{
-  if(numberCheck(loanInput.value)){
-    loanInput.classList.remove("invalid")
-    console.log(Number(loanInput.value.replace(",",".")))
-  }else{
-    loanInput.classList.add("invalid")
+let year: { amount: number; isSet: Boolean } = {
+  amount: 25,
+  isSet: false,
+};
+//the calculate button to start the calculation
+const btn = document.getElementById("calculateBtn") as HTMLButtonElement;
+btn.addEventListener("click", () => {
+  if (loan.isSet && year.isSet && interest.isSet) {
+    console.log("it works!");
   }
-})
-
-const interestInput = document.getElementById("interest")as HTMLInputElement
-interestInput.addEventListener("blur",()=>{
-  if(numberCheck(interestInput.value)){
-    interestInput.classList.remove("invalid")
-    console.log(Number(interestInput.value.replace(",",".")))
-  }else{
-    interestInput.classList.add("invalid")
+});
+//the loan amount input and checks
+const loanInput = document.getElementById("loan") as HTMLInputElement;
+loanInput.addEventListener("blur", () => {
+  if (numberCheck(loanInput.value)) {
+    if (loanCheck(Number(loanInput.value.replace(",", ".")))) {
+      loanInput.classList.remove("invalid");
+      loan.amount = Number(loanInput.value.replace(",", "."));
+      loan.isSet = true;
+    } else {
+      loanInput.classList.add("invalid");
+      loan.isSet = false;
+    }
+  } else {
+    loanInput.classList.add("invalid");
+    loan.isSet = false;
   }
-})
-
-const yearsInput = document.getElementById("years")as HTMLInputElement
-yearsInput.addEventListener("blur",()=>{
-  if(numberCheck(yearsInput.value)){
-    yearsInput.classList.remove("invalid")
-    console.log(Number(yearsInput.value.replace(",",".")))
-    year.amount = Number(yearsInput.value.replace(",","."))
-    year.isSet=true
-    console.log(year)
-  }else{
-    yearsInput.classList.add("invalid")
+  if (loanInput.value == "") {
+    loanInput.classList.remove("invalid");
   }
-})
+});
+//the interest input field and checks
+const interestInput = document.getElementById("interest") as HTMLInputElement;
+interestInput.addEventListener("blur", () => {
+  if (numberCheck(interestInput.value)) {
+    if (procentCheck(Number(interestInput.value.replace(",", ".")))) {
+      interestInput.classList.remove("invalid");
+      interest.procentage = Number(interestInput.value.replace(",", "."));
+      interest.isSet = true;
+    } else {
+      interestInput.classList.add("invalid");
+      interest.isSet = false;
+    }
+  } else {
+    interestInput.classList.add("invalid");
+    interest.isSet = false;
+  }
+  if (interestInput.value == "") {
+    interestInput.classList.remove("invalid");
+  }
+});
+//the years input and checks
+const yearsInput = document.getElementById("years") as HTMLInputElement;
+yearsInput.addEventListener("blur", () => {
+  if (numberCheck(yearsInput.value)) {
+    if (yearCheck(Number(yearsInput.value.replace(",", ".")))) {
+      yearsInput.classList.remove("invalid");
+      year.amount = Number(yearsInput.value.replace(",", "."));
+      year.isSet = true;
+    } else {
+      yearsInput.classList.add("invalid");
+      year.isSet = false;
+    }
+  } else {
+    yearsInput.classList.add("invalid");
+    year.isSet = false;
+  }
+  if (yearsInput.value == "") {
+    yearsInput.classList.remove("invalid");
+  }
+});
 
-
-function amount(p:number,r:number,n:number):void{
-let monthlyPay:number = p * ((r*(1+r)**n)/((1+r)**n-1))
-const paidInterest = totalInterest(n,p,monthlyPay)
-const outputDiv = document.getElementById("output") as HTMLDivElement
-  const newP = document.createElement("p")
-  newP.innerHTML=`You have to pay ${formatMoney(monthlyPay)} per month and the what you paid in interest is ${formatMoney(paidInterest)} so the total is ${formatMoney((paidInterest + p))}`
-  console.log(`${monthlyPay} and months left ${n} your total is ${p}`)
-  outputDiv.appendChild(newP)
-
-
+//function section
+function monthlyPay(loan: number, interest: number, months: number): number {
+  return (
+    loan *
+    ((interest * (1 + interest) ** months) / ((1 + interest) ** months - 1))
+  );
 }
 
-function monthlyPay(loan:number, interest:number, months:number):number{
-  return loan * ((interest*(1+interest)**months)/((1+interest)**months-1))
+function totalInterest(
+  months: number,
+  totalPaid: number,
+  monthPaid: number
+): number {
+  return months * monthPaid - totalPaid;
 }
 
-function totalInterest(months:number,totalPaid:number,monthPaid:number):number{
-  return months*monthPaid-totalPaid
+function formatMoney(unformatted: number): string {
+  return unformatted.toLocaleString("sv-SE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
-function formatMoney(unformatted:number):string{
-  return unformatted.toLocaleString("sv-SE",{minimumFractionDigits:2, maximumFractionDigits: 2})
+function numberCheck(x: any): boolean {
+  return /^[0-9]+([.,][0-9]+)?$/.test(x);
 }
 
-function numberCheck(x:any):boolean{
-return /^[0-9]+([.,][0-9]+)?$/.test(x)
+function yearCheck(year: number): boolean {
+  if (year <= 50 && year > 0) {
+    return true;
+  }
+  return false;
 }
 
+function procentCheck(procentage: number): boolean {
+  if (procentage < 30 && procentage > 0) {
+    return true;
+  }
+  return false;
+}
 
-
-
-
-
+function loanCheck(amount: number): boolean {
+  if (amount > 0.01 && amount < 1000000000) {
+    return true;
+  }
+  return false;
+}
