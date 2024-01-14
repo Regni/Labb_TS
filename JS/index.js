@@ -4,7 +4,7 @@ let loan = {
     isSet: false,
 };
 let interest = {
-    procentage: 3,
+    procentage: 0.03,
     isSet: false,
 };
 let year = {
@@ -16,6 +16,7 @@ const btn = document.getElementById("calculateBtn");
 btn.addEventListener("click", () => {
     if (loan.isSet && year.isSet && interest.isSet) {
         console.log("it works!");
+        startFormat();
     }
 });
 //the loan amount input and checks
@@ -46,7 +47,8 @@ interestInput.addEventListener("blur", () => {
     if (numberCheck(interestInput.value)) {
         if (procentCheck(Number(interestInput.value.replace(",", ".")))) {
             interestInput.classList.remove("invalid");
-            interest.procentage = Number(interestInput.value.replace(",", "."));
+            interest.procentage =
+                Number(interestInput.value.replace(",", ".")) / 1200;
             interest.isSet = true;
         }
         else {
@@ -118,4 +120,15 @@ function loanCheck(amount) {
         return true;
     }
     return false;
+}
+function monthlyInterest() {
+    return loan.amount * interest.procentage;
+}
+function startFormat() {
+    let monthly = monthlyPay(loan.amount, interest.procentage, year.amount * 12);
+    let interestPaid = monthlyInterest();
+    let amortering = monthly - interestPaid;
+    console.log(amortering);
+    console.log(interestPaid);
+    console.log(monthly);
 }
