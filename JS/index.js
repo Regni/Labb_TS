@@ -121,14 +121,35 @@ function loanCheck(amount) {
     }
     return false;
 }
-function monthlyInterest() {
-    return loan.amount * interest.procentage;
+function monthlyInterest(leftoverLoan = loan.amount) {
+    return leftoverLoan * interest.procentage;
 }
 function startFormat() {
     let monthly = monthlyPay(loan.amount, interest.procentage, year.amount * 12);
-    let interestPaid = monthlyInterest();
-    let amortering = monthly - interestPaid;
-    console.log(amortering);
-    console.log(interestPaid);
-    console.log(monthly);
+    let amortering;
+    let paidInterest;
+    let leftoverloan = loan.amount;
+    let totalInterest = 0;
+    const outDiv = document.getElementById("output");
+    const amortPlan = document.createElement("div");
+    amortPlan.innerHTML = `<pre>| Months | Remaining loan | Interest Paid | Amortization |</pre>`;
+    for (let month = 0; month < year.amount * 12; month++) {
+        paidInterest = monthlyInterest(leftoverloan);
+        totalInterest += paidInterest;
+        amortering = monthly - paidInterest;
+        leftoverloan -= amortering;
+        const newP = document.createElement("pre");
+        newP.innerHTML = `| ${String(month + 1).padEnd(6)} | ${formatMoney(leftoverloan).padEnd(14)} | ${formatMoney(paidInterest).padEnd(13)} | ${formatMoney(amortering).padEnd(12)} |`;
+        amortPlan.appendChild(newP);
+    }
+    outDiv.innerHTML = `<h1>Your repayment plan!</h1>
+  <h2>The details</h2>
+  <p>total loan: ${loan.amount}</p>
+  <p>Annual Interest: ${interest.procentage * 1200}%</p>
+  <p>Loan duration: ${year.amount} years</p>
+  <p>Monthly paid: ${formatMoney(monthly)}</p>
+  <p>Total interest: ${formatMoney(totalInterest)}</p>
+  <p>Total paid: ${formatMoney(loan.amount + totalInterest)}</p>
+  `;
+    outDiv.appendChild(amortPlan);
 }
