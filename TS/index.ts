@@ -17,8 +17,9 @@ let year: { amount: number; isSet: Boolean } = {
 const btn = document.getElementById("calculateBtn") as HTMLButtonElement;
 btn.addEventListener("click", () => {
   if (loan.isSet && year.isSet && interest.isSet) {
-    console.log("it works!");
     startFormat();
+  } else {
+    alertUser();
   }
 });
 //the loan amount input and checks
@@ -165,13 +166,19 @@ function startFormat() {
   }
   outDiv.innerHTML = `<h1>Your repayment plan!</h1>
   <h2>The details</h2>
-  <p>total loan: ${loan.amount}</p>
+  <p>total loan: ${formatMoney(loan.amount)} sek</p>
   <p>Annual Interest: ${interest.procentage * 1200}%</p>
   <p>Loan duration: ${year.amount} years</p>
-  <p>Monthly paid: ${formatMoney(monthly)}</p>
-  <p>Total interest: ${formatMoney(totalInterest)}</p>
-  <p>Total paid: ${formatMoney(loan.amount + totalInterest)}</p>
+  <p>Monthly paid: ${formatMoney(monthly)} sek</p>
+  <p>Total interest: ${formatMoney(totalInterest)} sek</p>
+  <p>Total paid: ${formatMoney(loan.amount + totalInterest)} sek</p>
   `;
 
   outDiv.appendChild(amortPlan);
+}
+
+function alertUser() {
+  alert(
+    "The data provide is wrong or missing.\nData should be in numbers for each field.\nLoan: 0 - 1 000 000 000\ninterest: 0-30\nyears: 0-50"
+  );
 }
